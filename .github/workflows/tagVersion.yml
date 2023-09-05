@@ -1,0 +1,26 @@
+name: Tag Python Package Version
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Read python package version
+        run: |
+          version=$(python - "from src.awesome_code.__about__ import __version__ as version; print(version)")
+          echo "Version: $version"
+      - name: Create Git Tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag $version
+          git push origin $version
