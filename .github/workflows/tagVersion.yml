@@ -22,7 +22,7 @@ jobs:
       - name: Check if tag exists
         id: tag_exists
         run: |
-          tag_exists=$(git tag -l --contains HEAD | grep -c "^$version$")
+          tag_exists=$(git tag -l | grep -c "${{ steps.version.outputs.version }}")
           echo "::set-output name=tag_exists::$tag_exists"
       - name: Create tag
         run: |
