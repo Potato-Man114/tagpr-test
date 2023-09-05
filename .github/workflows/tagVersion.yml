@@ -16,7 +16,7 @@ jobs:
           python-version: '3.11'
       - name: Read python package version
         run: |
-          version=$(python - "from src.awesome_code.__about__ import __version__ as version; print(version)")
+          version=$(python -c "from src.awesome_code.__about__ import __version__ as version; print(version)")
           echo "Version: $version"
       - name: Create Git Tag
         run: |
