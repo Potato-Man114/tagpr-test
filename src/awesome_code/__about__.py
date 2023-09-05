@@ -1,3 +1,3 @@
 """__about__ file for testing purposes"""
 
-__version__ = "0.0.1" #test moving version tag
+__version__ = "1.0.0"
