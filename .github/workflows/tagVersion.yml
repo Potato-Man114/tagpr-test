@@ -14,33 +14,36 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - name: Read version
-        id: version
-        run: |
-          version=$(python -c "from src.awesome_code.__about__ import __version__ as version; print(version)")
-          echo "::set-output name=version::$version"
-      - name: Check if tag exists
-        id: tag_exists
-        run: |
-          tag_exists=$(git tag -l | grep -c "${{ steps.version.outputs.version }}")
-          echo "::set-output name=tag_exists::$tag_exists"
-      - name: Create tag
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          if [ "${{ steps.tag_exists.outputs.tag_exists }}" -eq 0 ]; then
-            git tag ${{ steps.version.outputs.version }}
-            git push origin ${{ steps.version.outputs.version }}
-          else
-            echo "Tag ${{ steps.version.outputs.version }} already exists. Skipping tag creation."
-          fi
-      # - name: Read version & tag
+      # - name: Read version
+      #   id: version
       #   run: |
       #     version=$(python -c "from src.awesome_code.__about__ import __version__ as version; print(version)")
-      #     echo "Version: $version"
+      #     echo "::set-output name=version::$version"
+      # - name: Check if tag exists
+      #   id: tag_exists
+      #   run: |
+      #   if git rev-parse --quiet --verify "refs/tags/${{ steps.version.outputs.version }}"; then
+      #     echo "::set-output name=tag_exists::true"
+      #   else
+      #     echo "::set-output name=tag_exists::false"
+      #   fi
+      # - name: Create tag
+      #   run: |
       #     git config --global user.email "actions@github.com"
       #     git config --global user.name "GitHub Actions"
-      #     git tag $version
-      #     git push origin $version
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     if [ "${{ steps.tag_exists.outputs.tag_exists }}" -eq 0 ]; then
+      #       git tag ${{ steps.version.outputs.version }}
+      #       git push origin ${{ steps.version.outputs.version }}
+      #     else
+      #       echo "Tag ${{ steps.version.outputs.version }} already exists. Skipping tag creation."
+      #     fi
+      - name: Read version & tag
+        run: |
+          version=$(python -c "from src.awesome_code.__about__ import __version__ as version; print(version)")
+          echo "Version: $version"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git tag -f $version
+          git push origin $version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
